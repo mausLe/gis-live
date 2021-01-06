@@ -4,7 +4,6 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 import os, folium
-import turtle
 import numpy as np
 
 ### ---------------------- Connect 2nd server ------------------
