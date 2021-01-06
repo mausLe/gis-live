@@ -1,0 +1,63 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Tuan Anh Le">
+
+  <title>GIS Lora Website</title>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="{% static '/bootstrap/css/bootstrap.min.css' %}">
+
+</head>
+
+<body>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<img src="{% static 'images/logo_uit.png' %}" width= 100 height= auto>
+		
+		<a class="navbar-brand" href="{% url 'location' %}">RT - Location</a>
+		<a class="navbar-brand" href="{% url 'history' %}">History</a>
+	  
+	</nav>
+
+
+  <!-- Page Content -->
+  <div class="container">
+    <div class="row">
+
+      <div class="col-lg-12 text-center">
+        <h1 class="mt-5">GIS Website developed by Electricians</h1>
+        <p class="lead">Let's find your doggo!</p>
+
+        {{ my_map|safe }}
+
+        <ul class="list-unstyled">
+		  <li>Developed by CE.Electricians</li>
+          <li>2020</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="{% static '/jquery/jquery.slim.min.js' %}"></script>
+  <script src="{% static '/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+</body>
+
+<footer>
+	<p><b>Contact</b></p>	
+	<p>Tuan Anh Le - <a href="mailto:anhlt.cse@gmail.com">anhlt.cse@gmail.com</a></p>
+	<!--p>Author: XYZ</p-->
+	<!--p>Website is based on <a href="https://www.hatarilabs.com/ih-en/developing-geospatial-webapps-with-python-and-django-tutorial"> the origin</a> of HATARI LABS</p-->
+  </footer>
+</html>
+
+
+
