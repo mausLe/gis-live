@@ -5,6 +5,7 @@ from django.http import HttpResponse
 
 import os, folium
 import numpy as np
+from accounts import places # To get current place address
 
 ### ---------------------- Connect 2nd server ------------------
 import pymysql
@@ -85,8 +86,11 @@ def location(request):
     # read real time data
     map = createMap()
     
-    folium.Marker(location = [10.869800, 106.803000], 
-    popup="My location",
+    my_pos = [106.8051841, 10.87015844]
+    my_address = places.locate((my_pos[0], my_pos[1]))
+    
+    folium.Marker(location = [my_pos[1], my_pos[0]], 
+    popup="My location: "+ str(my_address),
     icon=folium.Icon(icon="globe")
     ).add_to(map)
 
@@ -115,7 +119,9 @@ def history(request):
         minutes = seconds // 60
         seconds %= 60
         h = "%d:%02d:%02d" % (hour, minutes, seconds)
-        folium.CircleMarker(location = coordinates[i], radius=10, popup = (h, t), fill=True, fill_color="Blue").add_to(map)
+
+        my_address = places.locate((coordinates[i][1], coordinates[i][0]))
+        folium.CircleMarker(location = coordinates[i], radius=10, popup = (h, t, my_address), fill=True, fill_color="Blue").add_to(map)
 
     folium.PolyLine(coordinates, color="red", weight=2.5, opacity=1).add_to(map)
 
