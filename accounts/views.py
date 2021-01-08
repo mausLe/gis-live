@@ -4,8 +4,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 import os, folium
-# import turtle
 import numpy as np
+from accounts import places # To get current place address
 
 ### ---------------------- Connect 2nd server ------------------
 import pymysql
@@ -79,10 +79,10 @@ for item in numpy_array:
 ### --------------------------------------------------------------------
 
 # Create your views here.
-def createMap():
+def createMap(pos, zoom):
     m = folium.Map(
-        location = my_coord[0],
-        zoom_start = 16)
+        location = pos,
+        zoom_start = zoom)
     
     return m
 
@@ -95,27 +95,26 @@ def home(request):
 def location(request):
 
     # read real time data
-    map = createMap()
+    map = createMap([Latitude, Longitude], zoom=16)
     
-    folium.Marker(location = [10.869800, 106.803000], 
-    popup="My location",
+    # my_pos = [106.8051841, 10.87015844]
+    my_address = places.locate((Longitude, Latitude))
+    
+    folium.Marker(location = [Latitude, Longitude], 
+    popup="My location: "+ str(my_address),
     icon=folium.Icon(icon="globe")
     ).add_to(map)
 
     map = map._repr_html_()
     context = {"my_map": map}
 
-    # threading.Timer(WAIT_SECONDS, location(request)).start()
-
     return render( request, "accounts/location.html", context)
-     
-    ## Real time
-    
+
 
 def history(request):
     # coordinates=[(10.869372, 106.802441),(10.870220, 106.802323),(10.870531, 106.802017),(10.871734, 106.802795),(10.873451, 106.802814)]
     coordinates = my_coord
-    map = createMap()
+    map = createMap(coordinates[0], zoom=15)
     folium.Marker(coordinates[0], popup="Starting point", icon=folium.Icon(color="green", icon="star")).add_to(map)
     folium.Marker(coordinates[-1], popup="Destination", icon=folium.Icon(color="red", icon="globe")).add_to(map)
 
@@ -129,7 +128,9 @@ def history(request):
         minutes = seconds // 60
         seconds %= 60
         h = "%d:%02d:%02d" % (hour, minutes, seconds)
-        folium.CircleMarker(location = coordinates[i], radius=10, popup = (h, t), fill=True, fill_color="Blue").add_to(map)
+
+        my_address = places.locate((coordinates[i][1], coordinates[i][0]))
+        folium.CircleMarker(location = coordinates[i], radius=10, popup = (h, t, my_address), fill=True, fill_color="Blue").add_to(map)
 
     folium.PolyLine(coordinates, color="red", weight=2.5, opacity=1).add_to(map)
 
