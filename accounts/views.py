@@ -54,6 +54,7 @@ with SSHTunnelForwarder(
     mycursor.execute(query2)
 
     results = mycursor.fetchall()
+    # longitude, latitude: 106.79567018256803, 10.863842719058377
 
     # -------------Khuong's edit for Real Time function -----------------
     for r in results:
@@ -67,8 +68,7 @@ with SSHTunnelForwarder(
     # --------------------------------------------------------------------
 
     numpy_array = np.array(results)
-    # trans = numpy_array.transpose()
-    # results = trans.tolist()
+
 
 my_coord = []
 for item in numpy_array:
@@ -97,7 +97,7 @@ def location(request):
     # read real time data
     map = createMap([Latitude, Longitude], zoom=16)
     
-    # my_pos = [106.8051841, 10.87015844]
+    # longitude, latitude: 106.79567018256803, 10.863842719058377
     my_address = places.locate((Longitude, Latitude))
     
     folium.Marker(location = [Latitude, Longitude], 
