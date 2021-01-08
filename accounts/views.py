@@ -4,8 +4,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 import os, folium
+# import turtle
 import numpy as np
-from accounts import places # To get current place address
 
 ### ---------------------- Connect 2nd server ------------------
 import pymysql
@@ -55,6 +55,17 @@ with SSHTunnelForwarder(
 
     results = mycursor.fetchall()
 
+    # -------------Khuong's edit for Real Time function -----------------
+    for r in results:
+        DataID = r[0]
+        DeviceID = r[1]
+        Longitude = r[2]/1000000 # Real-time longtitude
+        Latitude = r[3]/1000000  # Real-time latitude
+        Date = r[4]
+        Time = r[5]
+    # Readme: Longitude and Latitude variables above will take the LATEST values in the database. Believe me
+    # --------------------------------------------------------------------
+
     numpy_array = np.array(results)
     # trans = numpy_array.transpose()
     # results = trans.tolist()
@@ -86,11 +97,8 @@ def location(request):
     # read real time data
     map = createMap()
     
-    my_pos = [106.8051841, 10.87015844]
-    my_address = places.locate((my_pos[0], my_pos[1]))
-    
-    folium.Marker(location = [my_pos[1], my_pos[0]], 
-    popup="My location: "+ str(my_address),
+    folium.Marker(location = [10.869800, 106.803000], 
+    popup="My location",
     icon=folium.Icon(icon="globe")
     ).add_to(map)
 
@@ -100,7 +108,9 @@ def location(request):
     # threading.Timer(WAIT_SECONDS, location(request)).start()
 
     return render( request, "accounts/location.html", context)
-
+     
+    ## Real time
+    
 
 def history(request):
     # coordinates=[(10.869372, 106.802441),(10.870220, 106.802323),(10.870531, 106.802017),(10.871734, 106.802795),(10.873451, 106.802814)]
@@ -119,9 +129,7 @@ def history(request):
         minutes = seconds // 60
         seconds %= 60
         h = "%d:%02d:%02d" % (hour, minutes, seconds)
-
-        my_address = places.locate((coordinates[i][1], coordinates[i][0]))
-        folium.CircleMarker(location = coordinates[i], radius=10, popup = (h, t, my_address), fill=True, fill_color="Blue").add_to(map)
+        folium.CircleMarker(location = coordinates[i], radius=10, popup = (h, t), fill=True, fill_color="Blue").add_to(map)
 
     folium.PolyLine(coordinates, color="red", weight=2.5, opacity=1).add_to(map)
 
